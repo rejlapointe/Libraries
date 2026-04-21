@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Format Toolbox Demo</title>
+
+<!-- Quill.js -->
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+
+<!-- Handsontable -->
+<link href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+
+<!-- x-data-spreadsheet -->
+<link href="https://cdn.jsdelivr.net/npm/x-data-spreadsheet@1.1.9/dist/xspreadsheet.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/x-data-spreadsheet@1.1.9/dist/xspreadsheet.js"></script>
+
+<!-- Tabulator -->
+<link href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/css/tabulator_midnight.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #1a1a2e;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', sans-serif;
+    padding: 24px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 1.8rem;
+    color: #a8d8ff;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #888;
+    font-size: 0.85rem;
+    margin-bottom: 32px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: #16213e;
+    border: 1px solid #0f3460;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #7ec8e3;
+  }
+
+  .card-badge {
+    font-size: 0.7rem;
+    background: #0f3460;
+    color: #a8d8ff;
+    padding: 2px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .card-desc {
+    font-size: 0.8rem;
+    color: #888;
+    line-height: 1.4;
+  }
+
+  .demo-area {
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .docs-link {
+    font-size: 0.75rem;
+    color: #5a9fd4;
+    text-decoration: none;
+    align-self: flex-end;
+  }
+
+  .docs-link:hover { text-decoration: underline; }
+
+  /* Quill overrides */
+  .ql-container { font-size: 14px; min-height: 160px; }
+  .ql-toolbar { background: #f5f5f5; }
+
+  /* Handsontable container */
+  #hot-demo { width: 100%; overflow: auto; }
+
+  /* x-spreadsheet container */
+  #xs-demo { height: 260px; }
+
+  /* Tabulator container */
+  #tab-demo { width: 100%; }
+</style>
+</head>
+<body>
+
+<h1>Format Toolbox Demo</h1>
+<p class="subtitle">4 popular font &amp; cell formatting libraries — all interactive</p>
+
+<div class="grid">
+
+  <!-- 1. Quill.js -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Quill.js</span>
+      <span class="card-badge">Rich Text / Word-like</span>
+    </div>
+    <p class="card-desc">Full formatting toolbar: bold, italic, underline, font size, color, alignment, lists, links. Best for document/text editing.</p>
+    <div class="demo-area">
+      <div id="quill-demo"></div>
+    </div>
+    <a class="docs-link" href="https://quilljs.com/docs" target="_blank">quilljs.com/docs →</a>
+  </div>
+
+  <!-- 2. Handsontable -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Handsontable</span>
+      <span class="card-badge">Excel-like Grid</span>
+    </div>
+    <p class="card-desc">Spreadsheet-style grid with right-click context menu, column sorting, cell editing. 400+ Excel formulas supported.</p>
+    <div class="demo-area">
+      <div id="hot-demo"></div>
+    </div>
+    <a class="docs-link" href="https://handsontable.com/docs" target="_blank">handsontable.com/docs →</a>
+  </div>
+
+  <!-- 3. x-data-spreadsheet -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">x-data-spreadsheet</span>
+      <span class="card-badge">Lightweight Spreadsheet</span>
+    </div>
+    <p class="card-desc">Canvas-based Excel clone with toolbar for font, bold, italic, align, cell color, borders. Lightweight &amp; fast.</p>
+    <div class="demo-area">
+      <div id="xs-demo"></div>
+    </div>
+    <a class="docs-link" href="https://github.com/myliang/x-spreadsheet" target="_blank">github/x-spreadsheet →</a>
+  </div>
+
+  <!-- 4. Tabulator -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Tabulator.js</span>
+      <span class="card-badge">Data Grid</span>
+    </div>
+    <p class="card-desc">Feature-rich data grid used in this project. Supports per-cell color formatters, conditional styling, sorting, filtering.</p>
+    <div class="demo-area">
+      <div id="tab-demo"></div>
+    </div>
+    <a class="docs-link" href="https://tabulator.info/docs/6.3" target="_blank">tabulator.info/docs →</a>
+  </div>
+
+</div>
+
+<script>
+// ── 1. Quill.js ──────────────────────────────────────────────
+const quill = new Quill('#quill-demo', {
+  theme: 'snow',
+  modules: {
+    toolbar: [
+      [{ font: [] }, { size: ['small', false, 'large', 'huge'] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ color: [] }, { background: [] }],
+      [{ align: [] }],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['link', 'clean']
+    ]
+  },
+  placeholder: 'Type and format text here...'
+});
+
+quill.setContents([
+  { insert: 'Quill Rich Text Editor\n', attributes: { bold: true, size: 'large', color: '#1a6fa0' } },
+  { insert: 'Select text and use the toolbar above to apply ' },
+  { insert: 'bold', attributes: { bold: true } },
+  { insert: ', ' },
+  { insert: 'italic', attributes: { italic: true } },
+  { insert: ', ' },
+  { insert: 'colors', attributes: { color: '#e74c3c' } },
+  { insert: ', and more.\n' }
+]);
+
+
+// ── 2. Handsontable ──────────────────────────────────────────
+const hotData = [
+  ['Product',  'Q1',    'Q2',    'Q3',    'Q4',    'Total'],
+  ['Widgets',   1200,    1450,    1800,    2100,    6550],
+  ['Gadgets',    880,     940,    1050,    1200,    4070],
+  ['Dongles',    400,     390,     420,     510,    1720],
+  ['Cables',     250,     275,     300,     325,    1150],
+  ['TOTAL',     2730,    3055,    3570,    4135,   13490],
+];
+
+const hot = new Handsontable(document.getElementById('hot-demo'), {
+  data: hotData,
+  rowHeaders: true,
+  colHeaders: false,
+  contextMenu: true,
+  licenseKey: 'non-commercial-and-evaluation',
+  height: 220,
+  stretchH: 'all',
+  cell: [
+    { row: 0, col: 0, className: 'htBold' },
+    { row: 0, col: 1, className: 'htBold' },
+    { row: 0, col: 2, className: 'htBold' },
+    { row: 0, col: 3, className: 'htBold' },
+    { row: 0, col: 4, className: 'htBold' },
+    { row: 0, col: 5, className: 'htBold' },
+    { row: 5, col: 0, className: 'htBold' },
+    { row: 5, col: 5, className: 'htBold' },
+  ]
+});
+
+
+// ── 3. x-data-spreadsheet ────────────────────────────────────
+const xs = x_spreadsheet('#xs-demo', {
+  mode: 'edit',
+  showToolbar: true,
+  showGrid: true,
+  showContextmenu: true,
+  view: { height: () => 240, width: () => document.getElementById('xs-demo').offsetWidth || 600 },
+  row: { len: 10, height: 25 },
+  col: { len: 8, width: 100, indexWidth: 60, minWidth: 60 },
+});
+
+xs.loadData({
+  name: 'Sheet1',
+  styles: [
+    { bgcolor: '#1a6fa0', color: '#ffffff', font: { bold: true } },
+    { bgcolor: '#e8f4fd' },
+    { bgcolor: '#d4edda' },
+  ],
+  rows: {
+    0: { cells: {
+      0: { text: 'Name',    style: 0 },
+      1: { text: 'Dept',    style: 0 },
+      2: { text: 'Salary',  style: 0 },
+      3: { text: 'Rating',  style: 0 },
+    }},
+    1: { cells: { 0: { text: 'Alice', style: 1 }, 1: { text: 'Eng', style: 1 }, 2: { text: '95000', style: 1 }, 3: { text: '★★★★★', style: 2 } } },
+    2: { cells: { 0: { text: 'Bob'   }, 1: { text: 'Sales' }, 2: { text: '72000' }, 3: { text: '★★★★', style: 2 } } },
+    3: { cells: { 0: { text: 'Carol', style: 1 }, 1: { text: 'HR',   style: 1 }, 2: { text: '68000', style: 1 }, 3: { text: '★★★★★', style: 2 } } },
+    4: { cells: { 0: { text: 'Dave'  }, 1: { text: 'Eng'   }, 2: { text: '88000' }, 3: { text: '★★★', style: 2 } } },
+  }
+});
+
+
+// ── 4. Tabulator.js ──────────────────────────────────────────
+const tabData = [
+  { ticker: 'AAPL', name: 'Apple Inc.',      price: 189.30, change:  2.14, pct:  1.14, status: 'Buy'  },
+  { ticker: 'MSFT', name: 'Microsoft',       price: 415.50, change:  5.20, pct:  1.27, status: 'Buy'  },
+  { ticker: 'GOOGL',name: 'Alphabet',        price: 175.80, change: -1.30, pct: -0.73, status: 'Hold' },
+  { ticker: 'AMZN', name: 'Amazon',          price: 195.60, change:  3.80, pct:  1.98, status: 'Buy'  },
+  { ticker: 'TSLA', name: 'Tesla',           price:  245.1, change: -8.40, pct: -3.31, status: 'Sell' },
+  { ticker: 'META', name: 'Meta Platforms',  price: 512.90, change:  7.10, pct:  1.40, status: 'Buy'  },
+];
+
+new Tabulator('#tab-demo', {
+  data: tabData,
+  layout: 'fitColumns',
+  height: 220,
+  columns: [
+    { title: 'Ticker', field: 'ticker', width: 80, formatter: (cell) => `<strong>${cell.getValue()}</strong>` },
+    { title: 'Name',   field: 'name',   minWidth: 130 },
+    { title: 'Price',  field: 'price',  hozAlign: 'right', formatter: (cell) => `$${cell.getValue().toFixed(2)}` },
+    {
+      title: 'Change', field: 'change', hozAlign: 'right',
+      formatter: (cell) => {
+        const v = cell.getValue();
+        const color = v >= 0 ? '#2ecc71' : '#e74c3c';
+        return `<span style="color:${color};font-weight:600">${v >= 0 ? '+' : ''}${v.toFixed(2)}</span>`;
+      }
+    },
+    {
+      title: '%',      field: 'pct',    hozAlign: 'right',
+      formatter: (cell) => {
+        const v = cell.getValue();
+        const color = v >= 0 ? '#2ecc71' : '#e74c3c';
+        return `<span style="color:${color}">${v >= 0 ? '+' : ''}${v.toFixed(2)}%</span>`;
+      }
+    },
+    {
+      title: 'Status', field: 'status', hozAlign: 'center', width: 80,
+      formatter: (cell) => {
+        const v = cell.getValue();
+        const colors = { Buy: '#1a6fa0', Hold: '#e67e22', Sell: '#c0392b' };
+        return `<span style="background:${colors[v]};color:#fff;padding:2px 8px;border-radius:4px;font-size:11px">${v}</span>`;
+      }
+    }
+  ]
+});
+</script>
+</body>
+</html>
