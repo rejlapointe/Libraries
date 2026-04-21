@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Table Libraries Comparison</title>
+
+<!-- AG Grid -->
+<script src="https://unpkg.com/ag-grid-community@31.3.0/dist/ag-grid-community.min.js"></script>
+
+<!-- DataTables + ColResize -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/colresize/2.0.0/css/colResize.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/colresize/2.0.0/js/dataTables.colResize.min.js"></script>
+
+<!-- Handsontable -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@14.3.0/dist/handsontable.full.min.css">
+<script src="https://cdn.jsdelivr.net/npm/handsontable@14.3.0/dist/handsontable.full.min.js"></script>
+
+<!-- Grid.js -->
+<link rel="stylesheet" href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css">
+<script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+
+<!-- Tabulator -->
+<link href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator_midnight.min.css" rel="stylesheet">
+<script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0d1117; color: #e6edf3; font-family: Arial, sans-serif; padding: 24px; }
+h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+h1 span { color: #2e7fff; }
+.subtitle { font-size: 13px; color: #8fa8c8; margin-bottom: 32px; }
+.section { margin-bottom: 48px; }
+.section-header { margin-bottom: 14px; }
+.lib-name { font-size: 17px; font-weight: 700; }
+.lib-badge { display:inline-block; margin-left:10px; padding:2px 10px; border-radius:10px;
+  font-size:11px; font-weight:700; background:rgba(46,127,255,.15);
+  border:1px solid rgba(46,127,255,.4); color:#2e7fff; vertical-align:middle; }
+.lib-badge.green  { background:rgba(0,200,150,.15);  border-color:rgba(0,200,150,.4);  color:#00c896; }
+.lib-badge.amber  { background:rgba(240,165,0,.15);  border-color:rgba(240,165,0,.4);  color:#f0a500; }
+.lib-badge.red    { background:rgba(255,77,106,.15); border-color:rgba(255,77,106,.4); color:#ff4d6a; }
+.lib-note { font-size:12px; color:#8fa8c8; margin-top:6px; }
+.lib-note b { color:#e6edf3; }
+.features { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+.feat { font-size:11px; padding:2px 8px; border-radius:8px; border:1px solid rgba(255,255,255,.1); color:#8fa8c8; }
+.feat.yes  { border-color:rgba(0,200,150,.3); color:#00c896; }
+.feat.no   { border-color:rgba(255,77,106,.3); color:#ff4d6a; }
+.feat.part { border-color:rgba(240,165,0,.3);  color:#f0a500; }
+.divider { border:none; border-top:1px solid #1e3050; margin:48px 0; }
+
+/* ── Tabulator ── */
+.tabulator { border:1px solid #1e3050 !important; font-size:12px; }
+.tabulator .tabulator-header { background:#111d2e !important; border-bottom:1px solid #1e3050 !important; }
+.tabulator .tabulator-header .tabulator-col { background:#111d2e !important;
+  border-right:1px solid #1e3050 !important; color:#8fa8c8 !important; font-size:11px !important; font-weight:700 !important; }
+.tabulator .tabulator-row { background:#0d1520 !important; border-bottom:1px solid rgba(30,48,80,.5) !important; }
+.tabulator .tabulator-row:hover { background:rgba(46,127,255,.1) !important; }
+.tabulator .tabulator-row .tabulator-cell { border-right:1px solid rgba(30,48,80,.4) !important;
+  color:#e6edf3 !important; padding:6px 10px !important; }
+.tabulator input.tabulator-header-filter { background:#0d1117 !important; border:1px solid #1e3050 !important;
+  color:#e6edf3 !important; border-radius:3px; font-size:11px; padding:2px 6px; width:100%; }
+
+/* ── AG Grid ── */
+.ag-theme-alpine-dark {
+  --ag-background-color:#0d1520; --ag-header-background-color:#111d2e;
+  --ag-odd-row-background-color:#0d1520; --ag-row-hover-color:rgba(46,127,255,.1);
+  --ag-border-color:#1e3050; --ag-foreground-color:#e6edf3; --ag-header-foreground-color:#8fa8c8;
+  --ag-input-focus-border-color:#2e7fff; --ag-font-size:12px;
+}
+
+/* ── DataTables ── */
+table.dataTable { background:#0d1520 !important; color:#e6edf3 !important; border-collapse:collapse !important; width:100% !important; }
+table.dataTable thead th { background:#111d2e !important; color:#8fa8c8 !important;
+  border-bottom:1px solid #1e3050 !important; font-size:11px; font-weight:700; padding:8px 12px; }
+table.dataTable thead tr.filters th { padding:4px 6px; }
+table.dataTable thead tr.filters input { width:100%; background:#0d1117; border:1px solid #1e3050;
+  color:#e6edf3; border-radius:3px; padding:3px 6px; font-size:11px; }
+table.dataTable tbody tr { background:#0d1520 !important; }
+table.dataTable tbody tr:hover { background:rgba(46,127,255,.1) !important; }
+table.dataTable tbody td { border-bottom:1px solid rgba(30,48,80,.5) !important;
+  color:#e6edf3 !important; font-size:12px; padding:7px 12px !important; }
+.dataTables_wrapper { color:#8fa8c8; font-size:12px; }
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select {
+  background:#111d2e; border:1px solid #1e3050; color:#e6edf3; border-radius:4px; padding:3px 8px; }
+.dataTables_wrapper .dataTables_paginate .paginate_button { color:#8fa8c8 !important; border-radius:4px; }
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background:rgba(46,127,255,.2) !important; border-color:#2e7fff !important; color:#2e7fff !important; }
+.dt-colresizable { background:#2e7fff !important; width:2px !important; }
+
+/* ── Grid.js ── */
+.gridjs-wrapper { border:1px solid #1e3050 !important; border-radius:6px; overflow:hidden; }
+.gridjs-thead .gridjs-tr .gridjs-th { background:#111d2e !important; color:#8fa8c8 !important;
+  border-bottom:1px solid #1e3050 !important; font-size:11px; font-weight:700; padding:8px 12px; }
+.gridjs-tbody .gridjs-tr .gridjs-td { background:#0d1520 !important; color:#e6edf3 !important;
+  border-bottom:1px solid rgba(30,48,80,.5) !important; font-size:12px; padding:7px 12px; }
+.gridjs-tbody .gridjs-tr:hover .gridjs-td { background:rgba(46,127,255,.1) !important; }
+.gridjs-footer { background:#0d1117 !important; border-top:1px solid #1e3050 !important; padding:8px 12px; }
+.gridjs-pagination { color:#8fa8c8 !important; }
+.gridjs-pagination button { background:#111d2e !important; border:1px solid #1e3050 !important;
+  color:#8fa8c8 !important; border-radius:4px; }
+.gridjs-pagination button:hover { border-color:#2e7fff !important; color:#2e7fff !important; }
+.gridjs-search { padding:8px 12px 0; }
+.gridjs-search input { background:#111d2e !important; border:1px solid #1e3050 !important;
+  color:#e6edf3 !important; border-radius:4px; padding:5px 10px; font-size:12px; width:100%; }
+
+/* ── Handsontable ── */
+.handsontable td, .handsontable th { background:#0d1520 !important; color:#e6edf3 !important;
+  border-color:#1e3050 !important; font-size:12px; }
+.handsontable thead th { background:#111d2e !important; color:#8fa8c8 !important; font-size:11px; font-weight:700; }
+.handsontable .htCore td.current { background:rgba(46,127,255,.2) !important; }
+.handsontable .htCore td.area { background:rgba(46,127,255,.1) !important; }
+.wtHolder { background:#0d1520 !important; }
+.handsontable .changeType { color:#8fa8c8; }
+.htDropdownMenu .wtHolder { background:#111d2e !important; }
+.htDropdownMenu td { background:#111d2e !important; color:#e6edf3 !important; }
+.htDropdownMenu td:hover { background:#1e3050 !important; }
+
+/* ── TanStack ── */
+#tbl-tanstack-wrap { overflow-x:auto; border:1px solid #1e3050; border-radius:6px; }
+#tbl-tanstack { width:100%; border-collapse:collapse; font-size:12px; table-layout:fixed; }
+#tbl-tanstack th { background:#111d2e; color:#8fa8c8; font-size:11px; font-weight:700;
+  padding:8px 10px; border-bottom:1px solid #1e3050; border-right:1px solid rgba(30,48,80,.4);
+  white-space:nowrap; cursor:pointer; user-select:none; position:relative; }
+#tbl-tanstack th:hover { color:#e6edf3; }
+#tbl-tanstack td { padding:7px 10px; border-bottom:1px solid rgba(30,48,80,.5);
+  border-right:1px solid rgba(30,48,80,.3); color:#e6edf3; }
+#tbl-tanstack tr:hover td { background:rgba(46,127,255,.1); }
+#tbl-tanstack .filter-row th { padding:3px 4px; cursor:default; }
+#tbl-tanstack .filter-row input { width:100%; background:#0d1117; border:1px solid #1e3050;
+  color:#e6edf3; border-radius:3px; padding:3px 6px; font-size:11px; }
+.col-resizer { position:absolute; right:0; top:0; bottom:0; width:4px; cursor:col-resize;
+  background:transparent; }
+.col-resizer:hover, .col-resizer.resizing { background:#2e7fff; }
+</style>
+</head>
+<body>
+
+<h1>Table <span>Libraries</span> Comparison</h1>
+<p class="subtitle">Same dataset — 6 libraries. Sort ✓ Resize ✓ Filter ✓ Edit (where supported). All styled dark.</p>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     1. Tabulator
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="lib-name">1. Tabulator</span>
+    <span class="lib-badge green">v6.3.0 — Free</span>
+    <div class="features">
+      <span class="feat yes">✓ Sort</span>
+      <span class="feat yes">✓ Resize</span>
+      <span class="feat yes">✓ Per-column filter</span>
+      <span class="feat yes">✓ Inline edit</span>
+      <span class="feat yes">✓ Bottom calc totals</span>
+    </div>
+  </div>
+  <div id="tbl-tabulator"></div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     2. AG Grid
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="lib-name">2. AG Grid</span>
+    <span class="lib-badge green">Community — Free</span>
+    <span class="lib-badge amber">Enterprise — Paid</span>
+    <div class="features">
+      <span class="feat yes">✓ Sort</span>
+      <span class="feat yes">✓ Resize</span>
+      <span class="feat yes">✓ Column filter</span>
+      <span class="feat yes">✓ Inline edit</span>
+      <span class="feat yes">✓ Virtual scroll</span>
+    </div>
+  </div>
+  <div id="tbl-aggrid" class="ag-theme-alpine-dark" style="height:270px;"></div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     3. DataTables
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="lib-name">3. DataTables</span>
+    <span class="lib-badge green">Free</span>
+    <div class="features">
+      <span class="feat yes">✓ Sort</span>
+      <span class="feat yes">✓ Resize (plugin)</span>
+      <span class="feat yes">✓ Per-column filter</span>
+      <span class="feat no">✗ Edit (needs plugin)</span>
+      <span class="feat yes">✓ Pagination</span>
+    </div>
+  </div>
+  <table id="tbl-datatables" style="width:100%">
+    <thead>
+      <tr><th>Ticker</th><th>Name</th><th>Price (CAD)</th><th>Qty</th><th>Value (CAD)</th><th>Wt %</th><th>1Y Return</th></tr>
+      <tr class="filters"><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>
+    </thead>
+  </table>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     4. Grid.js
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="lib-name">4. Grid.js</span>
+    <span class="lib-badge green">Free / Open Source</span>
+    <div class="features">
+      <span class="feat yes">✓ Sort</span>
+      <span class="feat no">✗ Resize</span>
+      <span class="feat part">~ Global search only</span>
+      <span class="feat no">✗ Edit</span>
+      <span class="feat yes">✓ Pagination</span>
+    </div>
+  </div>
+  <div id="tbl-gridjs"></div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     5. Handsontable
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="lib-name">5. Handsontable</span>
+    <span class="lib-badge green">Free (non-commercial)</span>
+    <span class="lib-badge amber">Paid (commercial)</span>
+    <div class="features">
+      <span class="feat yes">✓ Sort</span>
+      <span class="feat yes">✓ Resize</span>
+      <span class="feat yes">✓ Dropdown filter</span>
+      <span class="feat yes">✓ Inline edit (native)</span>
+      <span class="feat yes">✓ Copy/paste</span>
+    </div>
+  </div>
+  <div id="tbl-handsontable"></div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     6. TanStack Table
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="lib-name">6. TanStack Table</span>
+    <span class="lib-badge green">Free / Open Source</span>
+    <div class="features">
+      <span class="feat yes">✓ Sort</span>
+      <span class="feat yes">✓ Resize</span>
+      <span class="feat yes">✓ Per-column filter</span>
+      <span class="feat part">~ Edit (manual wiring)</span>
+      <span class="feat yes">✓ Headless / full control</span>
+    </div>
+  </div>
+  <div id="tbl-tanstack-wrap">
+    <table id="tbl-tanstack"></table>
+  </div>
+</div>
+
+<script>
+const DATA = [
+  { ticker:'XIC',  name:'iShares Core S&P/TSX Composite',     price:52.18,  qty:420, value:21916, wt:23.0, ret:11.2  },
+  { ticker:'MNT',  name:'Royal Canadian Mint Gold',            price:76.40,  qty:182, value:13905, wt:14.0, ret:18.7  },
+  { ticker:'VFV',  name:'Vanguard S&P 500 Index ETF',          price:163.22, qty:78,  value:12731, wt:13.0, ret:24.3  },
+  { ticker:'VAB',  name:'Vanguard Canadian Aggregate Bond',    price:22.85,  qty:340, value:7769,  wt:8.0,  ret:-1.4  },
+  { ticker:'SHLD', name:'iShares Global Industrials ETF',      price:30.10,  qty:232, value:6983,  wt:7.0,  ret:6.8   },
+  { ticker:'SOXX', name:'iShares Semiconductor ETF',           price:398.10, qty:12,  value:4777,  wt:5.0,  ret:31.6  },
+  { ticker:'XFH',  name:'iShares MSCI World ex-Canada Hdg',   price:39.82,  qty:125, value:4978,  wt:5.0,  ret:14.2  },
+  { ticker:'PAVE', name:'Global X US Infrastructure Dev',      price:53.40,  qty:73,  value:3898,  wt:4.0,  ret:9.8   },
+  { ticker:'CPD',  name:'iShares S&P/TSX Cdn Preferred Share', price:13.45,  qty:295, value:3968,  wt:4.0,  ret:3.1   },
+  { ticker:'ZCM',  name:'BMO Mid Corporate Bond Index ETF',    price:15.90,  qty:250, value:3975,  wt:4.0,  ret:-0.8  },
+  { ticker:'VXUS', name:'Vanguard Total Intl Stock ETF',       price:58.30,  qty:68,  value:3964,  wt:4.0,  ret:8.4   },
+  { ticker:'IXN',  name:'iShares Global Tech ETF',             price:95.40,  qty:31,  value:2957,  wt:3.0,  ret:28.9  },
+  { ticker:'XMC',  name:'iShares S&P/TSX Small Cap Index',     price:36.20,  qty:82,  value:2968,  wt:3.0,  ret:7.3   },
+  { ticker:'IGF',  name:'iShares Global Infrastructure ETF',   price:58.75,  qty:51,  value:2996,  wt:3.0,  ret:5.6   },
+];
+const retFmt = v => `<span style="color:${v>=0?'#00c896':'#ff4d6a'}">${v>=0?'+':''}${v.toFixed(1)}%</span>`;
+const retStr = v => (v>=0?'+':'') + v.toFixed(1) + '%';
+
+/* ─── 1. Tabulator ──────────────────────────────────────────────────────── */
+new Tabulator('#tbl-tabulator', {
+  data: DATA,
+  layout: 'fitColumns',
+  resizableColumns: true,
+  columns: [
+    { title:'Ticker',     field:'ticker', width:80,  hozAlign:'center', headerSort:true, headerFilter:'input',
+      formatter: c => `<b>${c.getValue()}</b>`, editor:'input' },
+    { title:'Name',       field:'name',   minWidth:180, headerSort:true, headerFilter:'input', editor:'input' },
+    { title:'Price (CAD)',field:'price',  width:115, hozAlign:'right', headerSort:true, headerFilter:'input',
+      formatter: c => '$'+c.getValue().toFixed(2), editor:'number' },
+    { title:'Qty',        field:'qty',    width:70,  hozAlign:'center', headerSort:true, headerFilter:'input', editor:'number' },
+    { title:'Value (CAD)',field:'value',  width:125, hozAlign:'right', headerSort:true, headerFilter:'input',
+      formatter: c => '$'+c.getValue().toLocaleString('en-CA'),
+      bottomCalc:'sum', bottomCalcFormatter: c => '$'+(c.getValue()||0).toLocaleString('en-CA') },
+    { title:'Wt %',       field:'wt',     width:70,  hozAlign:'center', headerSort:true, headerFilter:'input',
+      formatter: c => c.getValue().toFixed(1)+'%', editor:'number' },
+    { title:'1Y Return',  field:'ret',    width:95,  hozAlign:'right', headerSort:true, headerFilter:'input',
+      formatter: c => retFmt(c.getValue()), editor:'number' },
+  ],
+});
+
+/* ─── 2. AG Grid ────────────────────────────────────────────────────────── */
+agGrid.createGrid(document.getElementById('tbl-aggrid'), {
+  columnDefs: [
+    { field:'ticker', headerName:'Ticker', width:100, cellStyle:{textAlign:'center',fontWeight:'bold'}, editable:true },
+    { field:'name',   headerName:'Name',   flex:1, editable:true },
+    { field:'price',  headerName:'Price (CAD)', width:125, type:'numericColumn', editable:true,
+      valueFormatter: p => '$'+p.value.toFixed(2) },
+    { field:'qty',    headerName:'Qty', width:80, type:'numericColumn', editable:true },
+    { field:'value',  headerName:'Value (CAD)', width:130, type:'numericColumn', editable:true,
+      valueFormatter: p => '$'+p.value.toLocaleString('en-CA') },
+    { field:'wt',     headerName:'Wt %', width:80, type:'numericColumn', editable:true,
+      valueFormatter: p => p.value.toFixed(1)+'%' },
+    { field:'ret',    headerName:'1Y Return', width:110, type:'numericColumn', editable:true,
+      valueFormatter: p => retStr(p.value),
+      cellStyle: p => ({ color: p.value >= 0 ? '#00c896' : '#ff4d6a', textAlign:'right' }) },
+  ],
+  rowData: DATA,
+  defaultColDef: { sortable:true, resizable:true, filter:true },
+  theme: 'legacy',
+});
+
+/* ─── 3. DataTables ─────────────────────────────────────────────────────── */
+const dtData = DATA.map(r => [r.ticker, r.name, '$'+r.price.toFixed(2), r.qty, '$'+r.value.toLocaleString('en-CA'), r.wt.toFixed(1)+'%', retStr(r.ret)]);
+const dt = $('#tbl-datatables').DataTable({
+  data: dtData,
+  orderCellsTop: true,
+  pageLength: 6,
+  lengthChange: false,
+  colResize: true,
+  initComplete: function() {
+    this.api().columns().every(function(i) {
+      const col = this;
+      const input = document.createElement('input');
+      input.placeholder = 'Filter…';
+      $('tr.filters th').eq(i).empty().append(input);
+      $(input).on('keyup change', function() { col.search(this.value).draw(); });
+    });
+  },
+  createdRow: (row, data) => {
+    const v = parseFloat(data[6]);
+    $('td:last', row).css('color', v >= 0 ? '#00c896' : '#ff4d6a');
+  },
+});
+
+/* ─── 4. Grid.js ────────────────────────────────────────────────────────── */
+new gridjs.Grid({
+  columns: ['Ticker','Name','Price (CAD)','Qty','Value (CAD)','Wt %','1Y Return'],
+  data: DATA.map(r => [
+    r.ticker, r.name, '$'+r.price.toFixed(2), r.qty,
+    '$'+r.value.toLocaleString('en-CA'), r.wt.toFixed(1)+'%',
+    gridjs.html(retFmt(r.ret)),
+  ]),
+  search: true,
+  sort: true,
+  pagination: { limit: 6 },
+}).render(document.getElementById('tbl-gridjs'));
+
+/* ─── 5. Handsontable ───────────────────────────────────────────────────── */
+new Handsontable(document.getElementById('tbl-handsontable'), {
+  data: DATA.map(r => [r.ticker, r.name, r.price, r.qty, r.value, r.wt, r.ret]),
+  colHeaders: ['Ticker','Name','Price (CAD)','Qty','Value (CAD)','Wt %','1Y Return'],
+  rowHeaders: false,
+  width: '100%',
+  height: 'auto',
+  licenseKey: 'non-commercial-and-evaluation',
+  stretchH: 'all',
+  manualColumnResize: true,
+  columnSorting: true,
+  filters: true,
+  dropdownMenu: ['filter_by_condition','filter_action_bar'],
+  columns: [
+    { type:'text' },
+    { type:'text' },
+    { type:'numeric', numericFormat:{ pattern:'$0,0.00' } },
+    { type:'numeric' },
+    { type:'numeric', numericFormat:{ pattern:'$0,0' } },
+    { type:'numeric', numericFormat:{ pattern:'0.0' } },
+    { type:'numeric', numericFormat:{ pattern:'0.0' } },
+  ],
+  cells: (row, col) => {
+    if (col === 6) {
+      return { renderer: (hot, td, r, c, prop, value) => {
+        td.style.color = value >= 0 ? '#00c896' : '#ff4d6a';
+        td.textContent = retStr(value);
+      }};
+    }
+  },
+});
+
+/* ─── 6. TanStack Table ─────────────────────────────────────────────────── */
+(async () => {
+  const { createTable, getCoreRowModel, getSortedRowModel, getFilteredRowModel } =
+    await import('https://esm.sh/@tanstack/table-core@8.17.0');
+
+  const colDefs = [
+    { id:'ticker', accessorKey:'ticker', header:'Ticker', size:90 },
+    { id:'name',   accessorKey:'name',   header:'Name',   size:200 },
+    { id:'price',  accessorKey:'price',  header:'Price (CAD)', size:115,
+      cell: i => '$'+i.getValue().toFixed(2) },
+    { id:'qty',    accessorKey:'qty',    header:'Qty',    size:70 },
+    { id:'value',  accessorKey:'value',  header:'Value (CAD)', size:125,
+      cell: i => '$'+i.getValue().toLocaleString('en-CA') },
+    { id:'wt',     accessorKey:'wt',     header:'Wt %',   size:75,
+      cell: i => i.getValue().toFixed(1)+'%' },
+    { id:'ret',    accessorKey:'ret',    header:'1Y Return', size:100,
+      cell: i => i.getValue() },
+  ];
+
+  let sortState = [];
+  let filterState = [];
+  let colSizes = Object.fromEntries(colDefs.map(c => [c.id, c.size]));
+
+  const makeTable = () => createTable({
+    data: DATA,
+    columns: colDefs,
+    state: { sorting: sortState, columnFilters: filterState, columnSizing: colSizes },
+    onSortingChange: u => { sortState = typeof u === 'function' ? u(sortState) : u; render(); },
+    onColumnFiltersChange: u => { filterState = typeof u === 'function' ? u(filterState) : u; render(); },
+    onColumnSizingChange: u => { colSizes = typeof u === 'function' ? u(colSizes) : u; render(); },
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    columnResizeMode: 'onChange',
+    enableSortingRemoval: true,
+    renderFallbackValue: '',
+  });
+
+  function render() {
+    const table = makeTable();
+    const el = document.getElementById('tbl-tanstack');
+    el.innerHTML = '';
+
+    // Header
+    const thead = el.createTHead();
+    // Sort row
+    const hrow = thead.insertRow();
+    for (const hg of table.getHeaderGroups()) {
+      for (const h of hg.headers) {
+        const th = document.createElement('th');
+        th.style.width = colSizes[h.id] + 'px';
+        th.style.minWidth = '50px';
+        const sortDir = h.column.getIsSorted();
+        const arrow = sortDir === 'asc' ? ' ▲' : sortDir === 'desc' ? ' ▼' : '';
+        th.innerHTML = `<span>${h.column.columnDef.header}${arrow}</span>`;
+        th.querySelector('span').onclick = () => h.column.toggleSorting();
+
+        // Resize handle
+        const resizer = document.createElement('div');
+        resizer.className = 'col-resizer';
+        resizer.addEventListener('mousedown', e => {
+          e.preventDefault();
+          const startX = e.clientX;
+          const startSize = colSizes[h.id] || h.column.columnDef.size;
+          resizer.classList.add('resizing');
+          const onMove = ev => {
+            colSizes = { ...colSizes, [h.id]: Math.max(50, startSize + ev.clientX - startX) };
+            render();
+          };
+          const onUp = () => {
+            resizer.classList.remove('resizing');
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+          };
+          document.addEventListener('mousemove', onMove);
+          document.addEventListener('mouseup', onUp);
+        });
+        th.appendChild(resizer);
+        hrow.appendChild(th);
+      }
+    }
+
+    // Filter row
+    const frow = document.createElement('tr');
+    frow.className = 'filter-row';
+    for (const hg of table.getHeaderGroups()) {
+      for (const h of hg.headers) {
+        const th = document.createElement('th');
+        th.style.width = colSizes[h.id] + 'px';
+        const inp = document.createElement('input');
+        inp.placeholder = 'Filter…';
+        const cur = filterState.find(f => f.id === h.id);
+        inp.value = cur ? cur.value : '';
+        inp.oninput = ev => {
+          const val = ev.target.value;
+          filterState = filterState.filter(f => f.id !== h.id);
+          if (val) filterState = [...filterState, { id: h.id, value: val }];
+          render();
+        };
+        th.appendChild(inp);
+        frow.appendChild(th);
+      }
+    }
+    thead.appendChild(frow);
+
+    // Body
+    const tbody = el.createTBody();
+    for (const row of table.getRowModel().rows) {
+      const tr = tbody.insertRow();
+      for (const cell of row.getVisibleCells()) {
+        const td = tr.insertCell();
+        td.style.width = colSizes[cell.column.id] + 'px';
+        const raw = cell.getValue();
+        if (cell.column.id === 'ret') {
+          td.innerHTML = retFmt(raw);
+        } else {
+          const fn = cell.column.columnDef.cell;
+          td.textContent = fn ? fn(cell.getContext()) : (raw ?? '');
+        }
+      }
+    }
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
