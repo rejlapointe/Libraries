@@ -27,6 +27,9 @@
 <link href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator_midnight.min.css" rel="stylesheet">
 <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
 
+<!-- SheetJS for XLSX export -->
+<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: #0d1117; color: #e6edf3; font-family: Arial, sans-serif; padding: 24px; }
@@ -51,7 +54,7 @@ h1 span { color: #2e7fff; }
 .feat.part { border-color:rgba(240,165,0,.3);  color:#f0a500; }
 .divider { border:none; border-top:1px solid #1e3050; margin:48px 0; }
 
-/* ── Tabulator ── */
+/* ── Tabulator shared ── */
 .tabulator { border:1px solid #1e3050 !important; font-size:12px; }
 .tabulator .tabulator-header { background:#111d2e !important; border-bottom:1px solid #1e3050 !important; }
 .tabulator .tabulator-header .tabulator-col { background:#111d2e !important;
@@ -62,6 +65,46 @@ h1 span { color: #2e7fff; }
   color:#e6edf3 !important; padding:6px 10px !important; }
 .tabulator input.tabulator-header-filter { background:#0d1117 !important; border:1px solid #1e3050 !important;
   color:#e6edf3 !important; border-radius:3px; font-size:11px; padding:2px 6px; width:100%; }
+.tabulator .tabulator-calcs-bottom .tabulator-cell { background:#111d2e !important; color:#f0a500 !important; font-weight:700 !important; }
+.tabulator .tabulator-calcs-top .tabulator-cell { background:#0a1525 !important; color:#2e7fff !important; font-weight:700 !important; }
+.tabulator .tabulator-row.tabulator-selected { background:rgba(46,127,255,.2) !important; }
+.tabulator .tabulator-row.tabulator-selected:hover { background:rgba(46,127,255,.3) !important; }
+.tabulator .tabulator-page-size { background:#0d1117 !important; border:1px solid #1e3050 !important; color:#e6edf3 !important; border-radius:3px; }
+.tabulator .tabulator-paginator { color:#8fa8c8 !important; }
+.tabulator .tabulator-page { background:#111d2e !important; border:1px solid #1e3050 !important; color:#8fa8c8 !important; border-radius:3px; margin:0 2px; }
+.tabulator .tabulator-page.active { background:rgba(46,127,255,.2) !important; border-color:#2e7fff !important; color:#2e7fff !important; }
+.tabulator .tabulator-page:disabled { opacity:.3; }
+.tabulator .tabulator-group { background:#0f1d2e !important; border-bottom:1px solid #1e3050 !important; color:#8fa8c8 !important; }
+.tabulator .tabulator-edit-select { background:#0d1117 !important; border:1px solid #2e7fff !important; color:#e6edf3 !important; border-radius:3px; }
+.tabulator .tabulator-edit-select option { background:#0d1117 !important; }
+.tabulator .tabulator-data-tree-branch { border-color:#1e3050 !important; }
+.tabulator .tabulator-data-tree-control { background:#1e3050 !important; color:#8fa8c8 !important; border:1px solid #2e7fff !important; border-radius:2px; }
+
+/* ── Feature Showcase ── */
+.feat-showcase-header { margin-bottom:28px; padding-bottom:14px; border-bottom:2px solid #1e3050; }
+.feat-showcase-title { font-size:20px; font-weight:800; color:#2e7fff; }
+.feat-showcase-sub { font-size:12px; color:#8fa8c8; margin-top:4px; }
+.feat-demo { margin-bottom:40px; }
+.feat-demo-title { font-size:13px; font-weight:700; color:#e6edf3; margin-bottom:4px; }
+.feat-demo-title span { color:#2e7fff; }
+.feat-demo-note { font-size:11px; color:#8fa8c8; margin-bottom:10px; }
+.demo-btn { display:inline-block; margin-right:6px; margin-bottom:8px; padding:5px 14px;
+  background:rgba(46,127,255,.15); border:1px solid rgba(46,127,255,.4); color:#2e7fff;
+  border-radius:4px; font-size:11px; cursor:pointer; user-select:none; }
+.demo-btn:hover { background:rgba(46,127,255,.3); }
+.event-log { background:#0a0f18; border:1px solid #1e3050; border-radius:4px;
+  padding:8px 12px; font-size:11px; color:#8fa8c8; height:100px; overflow-y:auto;
+  font-family:monospace; margin-top:8px; }
+.event-log .ev-edit   { color:#00c896; }
+.event-log .ev-sort   { color:#2e7fff; }
+.event-log .ev-filter { color:#f0a500; }
+.sel-count { font-size:12px; color:#00c896; margin-bottom:6px; min-height:18px; }
+.col-toggle-bar { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+.col-toggle-btn { padding:3px 10px; border-radius:4px; font-size:11px; cursor:pointer;
+  border:1px solid rgba(0,200,150,.4); background:rgba(0,200,150,.15); color:#00c896; user-select:none; }
+.col-toggle-btn.hidden { border-color:rgba(255,77,106,.4); background:rgba(255,77,106,.15); color:#ff4d6a; }
+.progress-bar-wrap { width:100%; background:#1e3050; border-radius:3px; height:10px; }
+.progress-bar-fill { height:100%; border-radius:3px; transition:width .3s; }
 
 /* ── AG Grid ── */
 .ag-theme-alpine-dark {
@@ -143,7 +186,7 @@ table.dataTable tbody td { border-bottom:1px solid rgba(30,48,80,.5) !important;
 <p class="subtitle">Same dataset — 6 libraries. Sort ✓ Resize ✓ Filter ✓ Edit (where supported). All styled dark.</p>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
-     1. Tabulator
+     1. Tabulator — Basic Demo
 ════════════════════════════════════════════════════════════════════════════ -->
 <div class="section">
   <div class="section-header">
@@ -158,6 +201,118 @@ table.dataTable tbody td { border-bottom:1px solid rgba(30,48,80,.5) !important;
     </div>
   </div>
   <div id="tbl-tabulator"></div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     Tabulator — Feature Showcase
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="feat-showcase-header">
+    <div class="feat-showcase-title">Tabulator — Feature Showcase</div>
+    <div class="feat-showcase-sub">13 live demos covering every major capability</div>
+  </div>
+
+  <!-- T2 -->
+  <div class="feat-demo">
+    <div class="feat-demo-title"><span>T2</span> — Multi-Sort</div>
+    <div class="feat-demo-note">Click a column to sort. Hold <b style="color:#e6edf3">Shift</b> + click another column to add a secondary sort.</div>
+    <div id="tbl-t2"></div>
+  </div>
+
+  <!-- T3 -->
+  <div class="feat-demo">
+    <div class="feat-demo-title"><span>T3</span> — Filter Types</div>
+    <div class="feat-demo-note">Ticker = text input · Type = select dropdown · 1Y Return = number range (≥)</div>
+    <div id="tbl-t3"></div>
+  </div>
+
+  <!-- T4 -->
+  <div class="feat-demo">
+    <div class="feat-demo-title"><span>T4</span> — Pagination</div>
+    <div class="feat-demo-note">Local pagination — 5 rows per page with page-size selector.</div>
+    <div id="tbl-t4"></div>
+  </div>
+
+  <!-- T5 -->
+  <div class="feat-demo">
+    <div class="feat-demo-title"><span>T5</span> — Virtual Scroll (500 rows)</div>
+    <div class="feat-demo-note">Only visible rows are in the DOM. Scroll is smooth regardless of dataset size.</div>
+    <div id="tbl-t5"></div>
+  </div>
+
+  <!-- T6 -->
+  <div class="feat-demo">
+    <div class="feat-demo-title"><span>T6</span> — Row Grouping</div>
+    <div class="feat-demo-note">Rows grouped by asset Type. Click a group header to collapse/expand.</div>
+    <div id="tbl-t6"></div>
+  </div>
+
+  <!-- T7 -->
+  <div class="feat-demo">
+    <div class="feat-demo-title"><span>T7</span> — Tree / Nested Rows</div>
+    <div class="feat-demo-note">Parent rows contain children. Click the ▶ arrow to expand a sector.</div>
+    <div id="tbl-t7"></div>
+  </div>
+
+  <!-- T8 -->
+  <div class="feat-demo">
+    <div class="feat-demo-title"><span>T8</span> — Column Reorder · Show/Hide · Freeze · Responsive Collapse</div>
+    <div class="feat-demo-note">Drag column headers to reorder. Click buttons to toggle visibility. Ticker column is frozen left.</div>
+    <div class="col-toggle-bar" id="col-toggle-bar"></div>
+    <div id="tbl-t8"></div>
+  </div>
+
+  <!-- T9 -->
+  <div class="feat-demo">
+    <div class="feat-demo-title"><span>T9</span> — Inline Editors</div>
+    <div class="feat-demo-note">Double-click any cell. Text · Select dropdown · Number · Date · Textarea — one per column.</div>
+    <div id="tbl-t9"></div>
+  </div>
+
+  <!-- T10 -->
+  <div class="feat-demo">
+    <div class="feat-demo-title"><span>T10</span> — Custom Formatters + Conditional Formatting</div>
+    <div class="feat-demo-note">Progress bar · Signal badge · Color-coded return · Star rating · On-target tick/cross</div>
+    <div id="tbl-t10"></div>
+  </div>
+
+  <!-- T11 -->
+  <div class="feat-demo">
+    <div class="feat-demo-title"><span>T11</span> — Top + Bottom Calc Rows</div>
+    <div class="feat-demo-note">Blue row (top) = averages. Amber row (bottom) = sum / min / max per column.</div>
+    <div id="tbl-t11"></div>
+  </div>
+
+  <!-- T12 -->
+  <div class="feat-demo">
+    <div class="feat-demo-title"><span>T12</span> — Row Selection (Checkbox)</div>
+    <div class="feat-demo-note">Click checkbox to select. Header checkbox = select all / deselect all.</div>
+    <div class="sel-count" id="sel-count">0 rows selected</div>
+    <div id="tbl-t12"></div>
+  </div>
+
+  <!-- T13 -->
+  <div class="feat-demo">
+    <div class="feat-demo-title"><span>T13</span> — Export</div>
+    <div class="feat-demo-note">Download or copy the full table data.</div>
+    <div style="margin-bottom:8px;">
+      <span class="demo-btn" onclick="tblExport.download('csv','portfolio.csv')">⬇ CSV</span>
+      <span class="demo-btn" onclick="tblExport.download('json','portfolio.json')">⬇ JSON</span>
+      <span class="demo-btn" onclick="tblExport.download('xlsx','portfolio.xlsx')">⬇ XLSX</span>
+      <span class="demo-btn" onclick="tblExport.copyToClipboard('all')">⎘ Copy to Clipboard</span>
+    </div>
+    <div id="tbl-t13"></div>
+  </div>
+
+  <!-- T14 -->
+  <div class="feat-demo">
+    <div class="feat-demo-title"><span>T14</span> — Events (Live Log)</div>
+    <div class="feat-demo-note">Edit a cell, sort, or type in a filter — events fire via <code style="color:#2e7fff;font-size:11px">table.on()</code> and appear below.</div>
+    <div id="tbl-t14"></div>
+    <div class="event-log" id="event-log"><span style="color:#3a4a5a">— events will appear here —</span></div>
+  </div>
 </div>
 
 <hr class="divider">
@@ -270,6 +425,9 @@ table.dataTable tbody td { border-bottom:1px solid rgba(30,48,80,.5) !important;
 </div>
 
 <script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   Shared data
+════════════════════════════════════════════════════════════════════════════ */
 const DATA = [
   { ticker:'XIC',  name:'iShares Core S&P/TSX Composite',     price:52.18,  qty:420, value:21916, wt:23.0, ret:11.2  },
   { ticker:'MNT',  name:'Royal Canadian Mint Gold',            price:76.40,  qty:182, value:13905, wt:14.0, ret:18.7  },
@@ -286,10 +444,62 @@ const DATA = [
   { ticker:'XMC',  name:'iShares S&P/TSX Small Cap Index',     price:36.20,  qty:82,  value:2968,  wt:3.0,  ret:7.3   },
   { ticker:'IGF',  name:'iShares Global Infrastructure ETF',   price:58.75,  qty:51,  value:2996,  wt:3.0,  ret:5.6   },
 ];
+
 const retFmt = v => `<span style="color:${v>=0?'#00c896':'#ff4d6a'}">${v>=0?'+':''}${v.toFixed(1)}%</span>`;
 const retStr = v => (v>=0?'+':'') + v.toFixed(1) + '%';
 
-/* ─── 1. Tabulator ──────────────────────────────────────────────────────── */
+/* typed data for showcase demos */
+const TYPE_MAP = { XIC:'ETF',MNT:'Gold',VFV:'ETF',VAB:'Bond',SHLD:'ETF',SOXX:'ETF',XFH:'ETF',PAVE:'ETF',CPD:'Preferred',ZCM:'Bond',VXUS:'ETF',IXN:'ETF',XMC:'ETF',IGF:'ETF' };
+const DATA_TYPED = DATA.map(r => ({...r, type: TYPE_MAP[r.ticker]}));
+
+/* 500-row dataset for virtual scroll */
+const LARGE_DATA = Array.from({length:500}, (_, i) => {
+  const b = DATA[i % DATA.length];
+  const n = i >= DATA.length ? '-' + (Math.floor(i/DATA.length)+1) : '';
+  return { ticker: b.ticker+n, name: b.name, price: +(b.price*(0.95+Math.random()*.1)).toFixed(2),
+    qty: b.qty + Math.round(Math.random()*40-20),
+    value: Math.round(b.value*(0.95+Math.random()*.1)),
+    wt: +(b.wt*(0.95+Math.random()*.1)).toFixed(1),
+    ret: +(b.ret*(0.9+Math.random()*.2)).toFixed(1) };
+});
+
+/* tree data for T7 */
+const TREE_DATA = [
+  { ticker:'EQUITY', name:'Equity', value:67354, wt:68.0, ret:18.1, _children:[
+    DATA_TYPED.find(r=>r.ticker==='XIC'),
+    DATA_TYPED.find(r=>r.ticker==='VFV'),
+    DATA_TYPED.find(r=>r.ticker==='SOXX'),
+    DATA_TYPED.find(r=>r.ticker==='IXN'),
+    DATA_TYPED.find(r=>r.ticker==='XFH'),
+    DATA_TYPED.find(r=>r.ticker==='PAVE'),
+    DATA_TYPED.find(r=>r.ticker==='VXUS'),
+    DATA_TYPED.find(r=>r.ticker==='XMC'),
+    DATA_TYPED.find(r=>r.ticker==='IGF'),
+    DATA_TYPED.find(r=>r.ticker==='SHLD'),
+  ]},
+  { ticker:'FIXED', name:'Fixed Income', value:11744, wt:12.0, ret:-1.1, _children:[
+    DATA_TYPED.find(r=>r.ticker==='VAB'),
+    DATA_TYPED.find(r=>r.ticker==='ZCM'),
+  ]},
+  { ticker:'ALTS', name:'Alternatives', value:17873, wt:18.0, ret:18.7, _children:[
+    DATA_TYPED.find(r=>r.ticker==='MNT'),
+    DATA_TYPED.find(r=>r.ticker==='CPD'),
+  ]},
+];
+
+/* editor demo data */
+const EDITOR_DATA = [
+  { ticker:'XIC',  type:'ETF',       price:52.18,  date:'2024-01-15', notes:'Core Canadian equity holding' },
+  { ticker:'MNT',  type:'Gold',      price:76.40,  date:'2024-02-20', notes:'Inflation hedge' },
+  { ticker:'VFV',  type:'ETF',       price:163.22, date:'2024-03-10', notes:'US large cap exposure' },
+  { ticker:'VAB',  type:'Bond',      price:22.85,  date:'2024-01-05', notes:'Fixed income anchor' },
+  { ticker:'SOXX', type:'ETF',       price:398.10, date:'2024-04-01', notes:'Semiconductor sector bet' },
+  { ticker:'CPD',  type:'Preferred', price:13.45,  date:'2024-02-14', notes:'Dividend income' },
+];
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   1. Tabulator — Basic
+════════════════════════════════════════════════════════════════════════════ */
 new Tabulator('#tbl-tabulator', {
   data: DATA,
   layout: 'fitColumns',
@@ -311,7 +521,319 @@ new Tabulator('#tbl-tabulator', {
   ],
 });
 
-/* ─── 2. AG Grid ────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   T2 — Multi-Sort
+════════════════════════════════════════════════════════════════════════════ */
+new Tabulator('#tbl-t2', {
+  data: DATA_TYPED,
+  layout: 'fitColumns',
+  resizableColumns: true,
+  columnHeaderSortMulti: true,
+  columns: [
+    { title:'Ticker', field:'ticker', width:80, hozAlign:'center', headerSort:true, formatter: c => `<b>${c.getValue()}</b>` },
+    { title:'Type',   field:'type',   width:100, headerSort:true },
+    { title:'Value (CAD)', field:'value', width:125, hozAlign:'right', headerSort:true, formatter: c => '$'+c.getValue().toLocaleString('en-CA') },
+    { title:'Wt %',   field:'wt',    width:70,  hozAlign:'center', headerSort:true, formatter: c => c.getValue().toFixed(1)+'%' },
+    { title:'1Y Return', field:'ret', width:95, hozAlign:'right', headerSort:true, formatter: c => retFmt(c.getValue()) },
+  ],
+});
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   T3 — Filter Types
+════════════════════════════════════════════════════════════════════════════ */
+new Tabulator('#tbl-t3', {
+  data: DATA_TYPED,
+  layout: 'fitColumns',
+  resizableColumns: true,
+  columns: [
+    { title:'Ticker', field:'ticker', width:80, hozAlign:'center', headerFilter:'input', formatter: c => `<b>${c.getValue()}</b>` },
+    { title:'Type',   field:'type',   width:100,
+      headerFilter:'select',
+      headerFilterParams:{ values:{'':'All','ETF':'ETF','Bond':'Bond','Gold':'Gold','Preferred':'Preferred'} } },
+    { title:'Value (CAD)', field:'value', width:125, hozAlign:'right', formatter: c => '$'+c.getValue().toLocaleString('en-CA') },
+    { title:'Wt %',   field:'wt',    width:70,  hozAlign:'center', formatter: c => c.getValue().toFixed(1)+'%' },
+    { title:'1Y Return ≥', field:'ret', width:110, hozAlign:'right',
+      headerFilter:'number', headerFilterFunc:'>=', headerFilterPlaceholder:'e.g. 5',
+      formatter: c => retFmt(c.getValue()) },
+  ],
+});
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   T4 — Pagination
+════════════════════════════════════════════════════════════════════════════ */
+new Tabulator('#tbl-t4', {
+  data: DATA,
+  layout: 'fitColumns',
+  pagination: true,
+  paginationSize: 5,
+  paginationSizeSelector: [5, 10, 14],
+  columns: [
+    { title:'Ticker', field:'ticker', width:80, hozAlign:'center', formatter: c => `<b>${c.getValue()}</b>` },
+    { title:'Name',   field:'name',   minWidth:180 },
+    { title:'Value (CAD)', field:'value', width:125, hozAlign:'right', formatter: c => '$'+c.getValue().toLocaleString('en-CA') },
+    { title:'Wt %',   field:'wt',    width:70,  hozAlign:'center', formatter: c => c.getValue().toFixed(1)+'%' },
+    { title:'1Y Return', field:'ret', width:95, hozAlign:'right', formatter: c => retFmt(c.getValue()) },
+  ],
+});
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   T5 — Virtual Scroll
+════════════════════════════════════════════════════════════════════════════ */
+new Tabulator('#tbl-t5', {
+  data: LARGE_DATA,
+  layout: 'fitColumns',
+  height: '260px',
+  resizableColumns: true,
+  columns: [
+    { title:'Ticker', field:'ticker', width:100, hozAlign:'center' },
+    { title:'Name',   field:'name',   minWidth:180 },
+    { title:'Price',  field:'price',  width:100, hozAlign:'right', formatter: c => '$'+c.getValue().toFixed(2) },
+    { title:'Qty',    field:'qty',    width:70,  hozAlign:'center' },
+    { title:'Value',  field:'value',  width:120, hozAlign:'right', formatter: c => '$'+c.getValue().toLocaleString('en-CA') },
+    { title:'1Y Return', field:'ret', width:95,  hozAlign:'right', formatter: c => retFmt(c.getValue()) },
+  ],
+});
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   T6 — Grouping
+════════════════════════════════════════════════════════════════════════════ */
+new Tabulator('#tbl-t6', {
+  data: DATA_TYPED,
+  layout: 'fitColumns',
+  groupBy: 'type',
+  groupHeader: (val, count) => `${val} <span style="color:#8fa8c8;font-size:11px;font-weight:400">(${count} rows)</span>`,
+  columns: [
+    { title:'Ticker', field:'ticker', width:80,  hozAlign:'center', formatter: c => `<b>${c.getValue()}</b>` },
+    { title:'Name',   field:'name',   minWidth:180 },
+    { title:'Value (CAD)', field:'value', width:125, hozAlign:'right', formatter: c => '$'+c.getValue().toLocaleString('en-CA') },
+    { title:'Wt %',   field:'wt',    width:70,  hozAlign:'center', formatter: c => c.getValue().toFixed(1)+'%' },
+    { title:'1Y Return', field:'ret', width:95, hozAlign:'right', formatter: c => retFmt(c.getValue()) },
+  ],
+});
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   T7 — Tree / Nested Rows
+════════════════════════════════════════════════════════════════════════════ */
+new Tabulator('#tbl-t7', {
+  data: TREE_DATA,
+  layout: 'fitColumns',
+  dataTree: true,
+  dataTreeChildField: '_children',
+  dataTreeStartExpanded: false,
+  columns: [
+    { title:'Ticker', field:'ticker', width:90,  hozAlign:'center' },
+    { title:'Name',   field:'name',   minWidth:200 },
+    { title:'Value (CAD)', field:'value', width:130, hozAlign:'right',
+      formatter: c => c.getValue() != null ? '$'+c.getValue().toLocaleString('en-CA') : '' },
+    { title:'Wt %',   field:'wt',    width:70,  hozAlign:'center',
+      formatter: c => c.getValue() != null ? c.getValue().toFixed(1)+'%' : '' },
+    { title:'1Y Return', field:'ret', width:95, hozAlign:'right',
+      formatter: c => c.getValue() != null ? retFmt(c.getValue()) : '' },
+  ],
+});
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   T8 — Column Reorder / Show-Hide / Freeze / Responsive
+════════════════════════════════════════════════════════════════════════════ */
+let tblT8;
+tblT8 = new Tabulator('#tbl-t8', {
+  data: DATA_TYPED,
+  layout: 'fitDataFill',
+  movableColumns: true,
+  responsiveLayout: 'collapse',
+  resizableColumns: true,
+  columns: [
+    { title:'Ticker', field:'ticker', width:80, frozen:true, responsive:0, formatter: c => `<b>${c.getValue()}</b>` },
+    { title:'Name',   field:'name',   minWidth:160, responsive:0 },
+    { title:'Type',   field:'type',   width:95,  responsive:1 },
+    { title:'Price',  field:'price',  width:100, hozAlign:'right', responsive:2, formatter: c => '$'+c.getValue().toFixed(2) },
+    { title:'Value',  field:'value',  width:120, hozAlign:'right', responsive:1, formatter: c => '$'+c.getValue().toLocaleString('en-CA') },
+    { title:'Wt %',   field:'wt',    width:70,  hozAlign:'center', responsive:2, formatter: c => c.getValue().toFixed(1)+'%' },
+    { title:'1Y Return', field:'ret', width:95, hozAlign:'right', responsive:3, formatter: c => retFmt(c.getValue()) },
+  ],
+});
+
+tblT8.on('tableBuilt', () => {
+  const bar = document.getElementById('col-toggle-bar');
+  const toggleCols = ['name','type','price','value','wt','ret'];
+  const labels = { name:'Name', type:'Type', price:'Price', value:'Value', wt:'Wt %', ret:'1Y Return' };
+  toggleCols.forEach(f => {
+    const btn = document.createElement('span');
+    btn.className = 'col-toggle-btn';
+    btn.textContent = labels[f];
+    btn.onclick = () => {
+      const col = tblT8.getColumn(f);
+      if (col.isVisible()) { col.hide(); btn.classList.add('hidden'); }
+      else { col.show(); btn.classList.remove('hidden'); }
+    };
+    bar.appendChild(btn);
+  });
+});
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   T9 — Inline Editors
+════════════════════════════════════════════════════════════════════════════ */
+new Tabulator('#tbl-t9', {
+  data: EDITOR_DATA,
+  layout: 'fitColumns',
+  columns: [
+    { title:'Ticker (text)',    field:'ticker', width:130, editor:'input',
+      editorParams:{ elementAttributes:{ maxlength:'8' } } },
+    { title:'Type (select)',    field:'type',   width:130, editor:'select',
+      editorParams:{ values:{ ETF:'ETF', Bond:'Bond', Gold:'Gold', Preferred:'Preferred', Other:'Other' } } },
+    { title:'Price (number)',   field:'price',  width:140, hozAlign:'right',
+      formatter: c => '$'+c.getValue().toFixed(2), editor:'number',
+      editorParams:{ min:0, step:0.01 } },
+    { title:'Date (date)',      field:'date',   width:140, editor:'date',
+      editorParams:{ format:'YYYY-MM-DD' } },
+    { title:'Notes (textarea)', field:'notes',  minWidth:180, editor:'textarea' },
+  ],
+});
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   T10 — Custom Formatters + Conditional
+════════════════════════════════════════════════════════════════════════════ */
+const FMT_DATA = DATA.map(r => ({
+  ...r,
+  alloc:  Math.round((r.wt / 23) * 100),
+  signal: r.ret > 15 ? 'buy' : r.ret > 0 ? 'hold' : 'sell',
+  stars:  r.ret > 20 ? 5 : r.ret > 10 ? 4 : r.ret > 5 ? 3 : r.ret > 0 ? 2 : 1,
+  onTarget: r.wt >= 3,
+}));
+
+new Tabulator('#tbl-t10', {
+  data: FMT_DATA,
+  layout: 'fitColumns',
+  columns: [
+    { title:'Ticker', field:'ticker', width:75, hozAlign:'center', formatter: c => `<b>${c.getValue()}</b>` },
+    { title:'Allocation Bar', field:'alloc', minWidth:140,
+      formatter: c => {
+        const v = c.getValue();
+        const col = v > 75 ? '#ff4d6a' : v > 40 ? '#f0a500' : '#00c896';
+        return `<div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${v}%;background:${col}"></div></div>`;
+      }
+    },
+    { title:'Signal', field:'signal', width:90, hozAlign:'center',
+      formatter: c => {
+        const v = c.getValue();
+        const col = v==='buy' ? '#00c896' : v==='hold' ? '#f0a500' : '#ff4d6a';
+        return `<span style="background:${col}22;border:1px solid ${col};color:${col};border-radius:4px;padding:1px 8px;font-size:10px;font-weight:700;text-transform:uppercase">${v}</span>`;
+      }
+    },
+    { title:'1Y Return', field:'ret', width:100, hozAlign:'right', formatter: c => retFmt(c.getValue()) },
+    { title:'Stars', field:'stars', width:95, hozAlign:'center',
+      formatter: c => `<span style="color:#f0a500;letter-spacing:1px">${'★'.repeat(c.getValue())}${'☆'.repeat(5-c.getValue())}</span>` },
+    { title:'On Target', field:'onTarget', width:90, hozAlign:'center',
+      formatter: c => c.getValue()
+        ? '<span style="color:#00c896;font-size:15px;font-weight:700">✓</span>'
+        : '<span style="color:#ff4d6a;font-size:15px;font-weight:700">✗</span>' },
+  ],
+});
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   T11 — Top + Bottom Calc Rows
+════════════════════════════════════════════════════════════════════════════ */
+new Tabulator('#tbl-t11', {
+  data: DATA,
+  layout: 'fitColumns',
+  columns: [
+    { title:'Ticker', field:'ticker', width:75, hozAlign:'center', formatter: c => `<b>${c.getValue()}</b>` },
+    { title:'Price (CAD)', field:'price', width:110, hozAlign:'right',
+      formatter: c => '$'+c.getValue().toFixed(2),
+      topCalc:'avg',  topCalcFormatter:  c => 'Avg $'+(c.getValue()||0).toFixed(2),
+      bottomCalc:'min', bottomCalcFormatter: c => 'Min $'+(c.getValue()||0).toFixed(2) },
+    { title:'Qty', field:'qty', width:70, hozAlign:'center',
+      topCalc:'avg',  topCalcFormatter:  c => 'Avg '+(c.getValue()||0).toFixed(0),
+      bottomCalc:'sum', bottomCalcFormatter: c => 'Sum '+(c.getValue()||0).toLocaleString() },
+    { title:'Value (CAD)', field:'value', width:125, hozAlign:'right',
+      formatter: c => '$'+c.getValue().toLocaleString('en-CA'),
+      topCalc:'avg',  topCalcFormatter:  c => 'Avg $'+(c.getValue()||0).toLocaleString('en-CA'),
+      bottomCalc:'sum', bottomCalcFormatter: c => 'Total $'+(c.getValue()||0).toLocaleString('en-CA') },
+    { title:'Wt %', field:'wt', width:70, hozAlign:'center',
+      formatter: c => c.getValue().toFixed(1)+'%',
+      topCalc:'avg',  topCalcFormatter:  c => 'Avg '+(c.getValue()||0).toFixed(1)+'%',
+      bottomCalc:'sum', bottomCalcFormatter: c => 'Sum '+(c.getValue()||0).toFixed(1)+'%' },
+    { title:'1Y Return', field:'ret', width:95, hozAlign:'right',
+      formatter: c => retFmt(c.getValue()),
+      topCalc:'avg',  topCalcFormatter:  c => 'Avg '+(c.getValue()||0).toFixed(1)+'%',
+      bottomCalc:'max', bottomCalcFormatter: c => 'Max '+(c.getValue()||0).toFixed(1)+'%' },
+  ],
+});
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   T12 — Row Selection
+════════════════════════════════════════════════════════════════════════════ */
+const selCount = document.getElementById('sel-count');
+const tblSel = new Tabulator('#tbl-t12', {
+  data: DATA,
+  layout: 'fitColumns',
+  selectable: true,
+  columns: [
+    { formatter:'rowSelection', titleFormatter:'rowSelection', hozAlign:'center', headerHozAlign:'center', width:45, headerSort:false },
+    { title:'Ticker', field:'ticker', width:80,  hozAlign:'center', formatter: c => `<b>${c.getValue()}</b>` },
+    { title:'Name',   field:'name',   minWidth:180 },
+    { title:'Value (CAD)', field:'value', width:125, hozAlign:'right', formatter: c => '$'+c.getValue().toLocaleString('en-CA') },
+    { title:'1Y Return',   field:'ret',   width:95,  hozAlign:'right', formatter: c => retFmt(c.getValue()) },
+  ],
+});
+tblSel.on('rowSelectionChanged', (data) => {
+  selCount.textContent = `${data.length} row${data.length!==1?'s':''} selected` +
+    (data.length ? ` — Total value: $${data.reduce((s,r)=>s+r.value,0).toLocaleString('en-CA')}` : '');
+});
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   T13 — Export
+════════════════════════════════════════════════════════════════════════════ */
+let tblExport;
+tblExport = new Tabulator('#tbl-t13', {
+  data: DATA,
+  layout: 'fitColumns',
+  columns: [
+    { title:'Ticker', field:'ticker', width:80,  hozAlign:'center' },
+    { title:'Name',   field:'name',   minWidth:200 },
+    { title:'Price',  field:'price',  width:100, hozAlign:'right', formatter: c => '$'+c.getValue().toFixed(2) },
+    { title:'Qty',    field:'qty',    width:70,  hozAlign:'center' },
+    { title:'Value',  field:'value',  width:120, hozAlign:'right', formatter: c => '$'+c.getValue().toLocaleString('en-CA') },
+    { title:'Wt %',   field:'wt',    width:70,  hozAlign:'center', formatter: c => c.getValue().toFixed(1)+'%' },
+    { title:'1Y Return', field:'ret', width:95, hozAlign:'right',  formatter: c => retStr(c.getValue()) },
+  ],
+});
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   T14 — Events
+════════════════════════════════════════════════════════════════════════════ */
+const logEl = document.getElementById('event-log');
+function logEvent(cls, msg) {
+  const first = logEl.children[0];
+  if (first && first.tagName === 'SPAN') logEl.innerHTML = '';
+  const div = document.createElement('div');
+  div.className = cls;
+  div.textContent = new Date().toLocaleTimeString() + ' — ' + msg;
+  logEl.prepend(div);
+  if (logEl.children.length > 30) logEl.lastChild.remove();
+}
+
+new Tabulator('#tbl-t14', {
+  data: DATA.slice(0, 6),
+  layout: 'fitColumns',
+  resizableColumns: true,
+  columns: [
+    { title:'Ticker', field:'ticker', width:80,  hozAlign:'center', headerSort:true, headerFilter:'input', editor:'input',
+      formatter: c => `<b>${c.getValue()}</b>` },
+    { title:'Name',   field:'name',   minWidth:180, headerSort:true, headerFilter:'input', editor:'input' },
+    { title:'Value',  field:'value',  width:120, hozAlign:'right', headerSort:true, editor:'number',
+      formatter: c => '$'+c.getValue().toLocaleString('en-CA') },
+    { title:'1Y Return', field:'ret', width:95, hozAlign:'right', headerSort:true, editor:'number',
+      formatter: c => retFmt(c.getValue()) },
+  ],
+})
+.on('cellEdited',    c => logEvent('ev-edit',   `Edited [${c.getField()}]: "${c.getOldValue()}" → "${c.getValue()}"`))
+.on('dataSorted',    s => logEvent('ev-sort',   `Sorted by: ${s.map(x=>x.field+' '+x.dir).join(', ') || '(cleared)'}`))
+.on('dataFiltered',  f => logEvent('ev-filter', `Filter: ${f.length ? f.map(x=>x.field+'="'+x.value+'"').join(', ') : '(cleared)'}`));
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2. AG Grid
+════════════════════════════════════════════════════════════════════════════ */
 agGrid.createGrid(document.getElementById('tbl-aggrid'), {
   columnDefs: [
     { field:'ticker', headerName:'Ticker', width:100, cellStyle:{textAlign:'center',fontWeight:'bold'}, editable:true },
@@ -332,7 +854,9 @@ agGrid.createGrid(document.getElementById('tbl-aggrid'), {
   theme: 'legacy',
 });
 
-/* ─── 3. DataTables ─────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   3. DataTables
+════════════════════════════════════════════════════════════════════════════ */
 const dtData = DATA.map(r => [r.ticker, r.name, '$'+r.price.toFixed(2), r.qty, '$'+r.value.toLocaleString('en-CA'), r.wt.toFixed(1)+'%', retStr(r.ret)]);
 const dt = $('#tbl-datatables').DataTable({
   data: dtData,
@@ -355,7 +879,9 @@ const dt = $('#tbl-datatables').DataTable({
   },
 });
 
-/* ─── 4. Grid.js ────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   4. Grid.js
+════════════════════════════════════════════════════════════════════════════ */
 new gridjs.Grid({
   columns: ['Ticker','Name','Price (CAD)','Qty','Value (CAD)','Wt %','1Y Return'],
   data: DATA.map(r => [
@@ -368,7 +894,9 @@ new gridjs.Grid({
   pagination: { limit: 6 },
 }).render(document.getElementById('tbl-gridjs'));
 
-/* ─── 5. Handsontable ───────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   5. Handsontable
+════════════════════════════════════════════════════════════════════════════ */
 new Handsontable(document.getElementById('tbl-handsontable'), {
   data: DATA.map(r => [r.ticker, r.name, r.price, r.qty, r.value, r.wt, r.ret]),
   colHeaders: ['Ticker','Name','Price (CAD)','Qty','Value (CAD)','Wt %','1Y Return'],
@@ -400,7 +928,9 @@ new Handsontable(document.getElementById('tbl-handsontable'), {
   },
 });
 
-/* ─── 6. TanStack Table ─────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   6. TanStack Table
+════════════════════════════════════════════════════════════════════════════ */
 (async () => {
   const { createTable, getCoreRowModel, getSortedRowModel, getFilteredRowModel } =
     await import('https://esm.sh/@tanstack/table-core@8.17.0');
@@ -442,10 +972,7 @@ new Handsontable(document.getElementById('tbl-handsontable'), {
     const table = makeTable();
     const el = document.getElementById('tbl-tanstack');
     el.innerHTML = '';
-
-    // Header
     const thead = el.createTHead();
-    // Sort row
     const hrow = thead.insertRow();
     for (const hg of table.getHeaderGroups()) {
       for (const h of hg.headers) {
@@ -456,8 +983,6 @@ new Handsontable(document.getElementById('tbl-handsontable'), {
         const arrow = sortDir === 'asc' ? ' ▲' : sortDir === 'desc' ? ' ▼' : '';
         th.innerHTML = `<span>${h.column.columnDef.header}${arrow}</span>`;
         th.querySelector('span').onclick = () => h.column.toggleSorting();
-
-        // Resize handle
         const resizer = document.createElement('div');
         resizer.className = 'col-resizer';
         resizer.addEventListener('mousedown', e => {
@@ -481,8 +1006,6 @@ new Handsontable(document.getElementById('tbl-handsontable'), {
         hrow.appendChild(th);
       }
     }
-
-    // Filter row
     const frow = document.createElement('tr');
     frow.className = 'filter-row';
     for (const hg of table.getHeaderGroups()) {
@@ -504,8 +1027,6 @@ new Handsontable(document.getElementById('tbl-handsontable'), {
       }
     }
     thead.appendChild(frow);
-
-    // Body
     const tbody = el.createTBody();
     for (const row of table.getRowModel().rows) {
       const tr = tbody.insertRow();
@@ -522,7 +1043,6 @@ new Handsontable(document.getElementById('tbl-handsontable'), {
       }
     }
   }
-
   render();
 })();
 </script>
