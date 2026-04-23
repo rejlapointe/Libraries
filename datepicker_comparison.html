@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Date Picker Comparison</title>
+
+<!-- Flatpickr -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<!-- Pikaday -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
+<script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
+
+<!-- Air Datepicker -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/air-datepicker@3/air-datepicker.css">
+<script src="https://cdn.jsdelivr.net/npm/air-datepicker@3/air-datepicker.js"></script>
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #1a1a2e; color: #ccc; font-family: sans-serif; padding: 30px; }
+  h1 { color: #fff; margin-bottom: 30px; font-size: 20px; }
+  .grid { display: flex; gap: 40px; flex-wrap: wrap; }
+  .card { background: #16213e; border: 1px solid #333; border-radius: 8px; padding: 20px; min-width: 300px; }
+  .card h2 { color: #4fc3f7; font-size: 14px; margin-bottom: 6px; }
+  .card p { font-size: 11px; color: #888; margin-bottom: 16px; }
+  label { font-size: 12px; color: #aaa; display: block; margin-bottom: 4px; }
+  input { background: #0f3460; border: 1px solid #444; color: #eee; padding: 6px 10px; border-radius: 4px; width: 100%; font-size: 13px; margin-bottom: 12px; }
+  select { background: #0f3460; border: 1px solid #444; color: #eee; padding: 6px 10px; border-radius: 4px; font-size: 13px; margin-bottom: 12px; }
+  .row { display: flex; gap: 8px; align-items: center; }
+  .row input { margin-bottom: 0; }
+  .sep { color: #666; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<h1>Date Picker Options — Dark Theme Comparison</h1>
+<div class="grid">
+
+  <!-- Flatpickr -->
+  <div class="card">
+    <h2>Flatpickr</h2>
+    <p>Lightweight, no dependencies. Native dark theme. Range mode built-in.</p>
+    <label>Period</label>
+    <select>
+      <option>1d</option><option>5d</option><option selected>3mo</option>
+      <option>6mo</option><option>ytd</option><option>1y</option><option>2y</option>
+      <option>5y</option><option>10y</option><option>max</option>
+    </select>
+    <label>Date Range</label>
+    <div class="row">
+      <input id="fp-from" placeholder="From" readonly>
+      <span class="sep">→</span>
+      <input id="fp-to" placeholder="To" readonly>
+    </div>
+  </div>
+
+  <!-- Pikaday -->
+  <div class="card">
+    <h2>Pikaday</h2>
+    <p>Simple and lightweight. Requires custom CSS for dark theme.</p>
+    <label>Period</label>
+    <select>
+      <option>1d</option><option>5d</option><option selected>3mo</option>
+      <option>6mo</option><option>ytd</option><option>1y</option><option>2y</option>
+      <option>5y</option><option>10y</option><option>max</option>
+    </select>
+    <label>Date Range</label>
+    <div class="row">
+      <input id="pk-from" placeholder="From" readonly>
+      <span class="sep">→</span>
+      <input id="pk-to" placeholder="To" readonly>
+    </div>
+  </div>
+
+  <!-- Air Datepicker -->
+  <div class="card">
+    <h2>Air Datepicker</h2>
+    <p>Feature-rich. Built-in dark theme. Range selection in one calendar.</p>
+    <label>Period</label>
+    <select>
+      <option>1d</option><option>5d</option><option selected>3mo</option>
+      <option>6mo</option><option>ytd</option><option>1y</option><option>2y</option>
+      <option>5y</option><option>10y</option><option>max</option>
+    </select>
+    <label>Date Range</label>
+    <div class="row">
+      <input id="air-range" placeholder="Select date range" readonly style="width:100%">
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Flatpickr — two inputs linked as range
+  flatpickr("#fp-from", { dateFormat: "Y-m-d", theme: "dark", defaultDate: new Date(Date.now() - 90*24*60*60*1000) });
+  flatpickr("#fp-to",   { dateFormat: "Y-m-d", theme: "dark", defaultDate: new Date() });
+
+  // Pikaday — two separate pickers
+  new Pikaday({ field: document.getElementById('pk-from'), format: 'YYYY-MM-DD' });
+  new Pikaday({ field: document.getElementById('pk-to'),   format: 'YYYY-MM-DD' });
+
+  // Air Datepicker — range mode, dark theme
+  new AirDatepicker('#air-range', { range: true, multipleDatesSeparator: ' → ', dateFormat: 'yyyy-MM-dd', theme: 'dark' });
+</script>
+</body>
+</html>
