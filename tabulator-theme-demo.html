@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tabulator Theme Demo</title>
+  <link id="theme-css" rel="stylesheet" href="">
+  <style id="custom-dark-css"></style>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0f1117; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; padding: 24px 16px; }
+    h2 { color: #f8fafc; margin-bottom: 16px; font-size: 1.1rem; }
+    #theme-bar {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px;
+    }
+    .theme-btn {
+      background: #1e2433; border: 1px solid #2d3748; border-radius: 8px;
+      color: #94a3b8; padding: 8px 14px; cursor: pointer; font-size: 0.82rem;
+      transition: background .15s, color .15s;
+    }
+    .theme-btn:hover { background: #253047; color: #e2e8f0; }
+    .theme-btn.active { background: #1e40af; color: #fff; border-color: #2563eb; }
+    #current-label { color: #64748b; font-size: 0.8rem; margin-bottom: 12px; }
+    #demo-table { margin-top: 8px; }
+    .usd { color: #fbbf24; font-size: 0.7rem; margin-left: 4px; }
+  </style>
+</head>
+<body>
+
+<h2>Tabulator Theme Picker — dark background (#0f1117)</h2>
+<div id="theme-bar"></div>
+<div id="current-label"></div>
+<div id="demo-table"></div>
+
+<script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+<script>
+  const BASE = 'https://unpkg.com/tabulator-tables@6.3.0/dist/css/';
+
+  const CUSTOM_DARK_CSS = `
+    .tabulator { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 12px; font-size: 0.82rem; color: #cbd5e1; }
+    .tabulator .tabulator-header { background: #151922; border-bottom: 1px solid #2d3748; border-radius: 12px 12px 0 0; }
+    .tabulator .tabulator-header .tabulator-col { background: #151922; border-right: 1px solid #2d3748; color: #64748b; font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: .05em; }
+    .tabulator .tabulator-header .tabulator-col.tabulator-sortable:hover { background: #1e2433; }
+    .tabulator .tabulator-header .tabulator-col .tabulator-col-content { padding: 10px 18px; }
+    .tabulator-row { background: #1a1f2e; border-bottom: 1px solid #1e2433; color: #cbd5e1; }
+    .tabulator-row:hover, .tabulator-row.tabulator-row-even:hover { background: #1e2433 !important; }
+    .tabulator-row.tabulator-row-even { background: #1a1f2e; }
+    .tabulator-row .tabulator-cell { border-right: none; padding: 10px 18px; color: #cbd5e1; }
+    .tabulator .tabulator-header .tabulator-col .tabulator-arrow { border-top-color: #4a5568; border-bottom-color: #4a5568; }
+    .tabulator-col-title { color: #64748b; }
+    .tabulator-row .tabulator-cell.tabulator-editing { border: none; background: #253047; }
+  `;
+
+  const THEMES = [
+    { num: 0, name: 'Custom Dark', file: 'tabulator.min.css', custom: true },
+    { num: 1, name: 'Default',      file: 'tabulator.min.css' },
+    { num: 2, name: 'Midnight',     file: 'tabulator_midnight.min.css' },
+    { num: 3, name: 'Modern',       file: 'tabulator_modern.min.css' },
+    { num: 4, name: 'Simple',       file: 'tabulator_simple.min.css' },
+    { num: 5, name: 'Bootstrap 3',  file: 'tabulator_bootstrap3.min.css' },
+    { num: 6, name: 'Bootstrap 4',  file: 'tabulator_bootstrap4.min.css' },
+    { num: 7, name: 'Bootstrap 5',  file: 'tabulator_bootstrap5.min.css' },
+    { num: 8, name: 'Semantic UI',  file: 'tabulator_semanticui.min.css' },
+    { num: 9, name: 'Bulma',        file: 'tabulator_bulma.min.css' },
+    { num:10, name: 'Materialize',  file: 'tabulator_materialize.min.css' },
+  ];
+
+  const DATA = [
+    { ticker: 'XIC',  isUSD: false, description: 'iShares Core S&P/TSX Capped Composite Index ETF', rejRRSP: 444, rejTFSA: 7,      kazRRSP: 256,    kazTFSA: 28,     totalQty: 735,    nativePrice: 54.55, cadPrice: 54.55,  value: 40094 },
+    { ticker: 'SOXX', isUSD: true,  description: 'iShares Semiconductor ETF',                       rejRRSP: 19.448, rejTFSA: 16.070, kazRRSP: null,   kazTFSA: 12.172, totalQty: 47.691, nativePrice: 531.73, cadPrice: 733.79, value: 34995 },
+    { ticker: 'MNT',  isUSD: false, description: 'Royal Canadian Mint Gold - CAD',                  rejRRSP: null, rejTFSA: 82,     kazRRSP: 304,    kazTFSA: 15,     totalQty: 401,    nativePrice: 66.70,  cadPrice: 66.70,  value: 26747 },
+    { ticker: 'VFV',  isUSD: false, description: 'Vanguard S&P 500 Index ETF',                      rejRRSP: 63,   rejTFSA: null,   kazRRSP: 69,     kazTFSA: null,   totalQty: 132,    nativePrice: 179.85, cadPrice: 179.85, value: 23740 },
+    { ticker: 'VAB',  isUSD: false, description: 'Vanguard Canadian Aggregate Bond Index ETF',       rejRRSP: 529,  rejTFSA: 1,      kazRRSP: 47,     kazTFSA: null,   totalQty: 577,    nativePrice: 22.81,  cadPrice: 22.81,  value: 13161 },
+    { ticker: 'PAVE', isUSD: true,  description: 'Global X U.S. Infrastructure Development ETF',    rejRRSP: 56.231, rejTFSA: 3.369, kazRRSP: null,  kazTFSA: 36.074, totalQty: 95.673, nativePrice: 57.11,  cadPrice: 78.81,  value: 7540  },
+  ];
+
+  function fmt(amount, currency, decimals = 2) {
+    return new Intl.NumberFormat('en-CA', {
+      style: 'currency', currency: currency || 'CAD',
+      maximumFractionDigits: decimals, minimumFractionDigits: decimals
+    }).format(amount);
+  }
+
+  const qtyFmt = cell => {
+    const { isUSD } = cell.getRow().getData();
+    const v = cell.getValue();
+    return v ? v.toFixed(isUSD ? 3 : 0) : '';
+  };
+
+  const COLS_DEF = [
+    'Rej RRSP', 'Rej TFSA', 'Kaz RRSP', 'Kaz TFSA'
+  ];
+  const FIELDS = ['rejRRSP', 'rejTFSA', 'kazRRSP', 'kazTFSA'];
+
+  let table = null;
+
+  function buildTable() {
+    if (table) { table.destroy(); table = null; }
+    table = new Tabulator('#demo-table', {
+      data: DATA,
+      layout: 'fitColumns',
+      initialSort: [{ column: 'value', dir: 'desc' }],
+      columns: [
+        {
+          title: 'Ticker', field: 'ticker', width: 100,
+          formatter: cell => {
+            const { isUSD } = cell.getRow().getData();
+            return isUSD ? `${cell.getValue()} <span class="usd">USD</span>` : cell.getValue();
+          }
+        },
+        { title: 'Description', field: 'description', widthGrow: 3 },
+        ...COLS_DEF.map((col, i) => ({
+          title: col, field: FIELDS[i],
+          hozAlign: 'right', headerHozAlign: 'right', sorter: 'number', formatter: qtyFmt,
+        })),
+        {
+          title: 'Total Qty', field: 'totalQty',
+          hozAlign: 'right', headerHozAlign: 'right', sorter: 'number',
+          formatter: cell => { const { isUSD } = cell.getRow().getData(); return cell.getValue().toFixed(isUSD ? 3 : 0); }
+        },
+        {
+          title: 'Native Price', field: 'nativePrice',
+          hozAlign: 'right', headerHozAlign: 'right', sorter: 'number',
+          formatter: cell => fmt(cell.getValue(), cell.getRow().getData().isUSD ? 'USD' : 'CAD'),
+        },
+        {
+          title: 'CAD Price', field: 'cadPrice',
+          hozAlign: 'right', headerHozAlign: 'right', sorter: 'number',
+          formatter: cell => fmt(cell.getValue(), 'CAD'),
+        },
+        {
+          title: 'Value', field: 'value',
+          hozAlign: 'right', headerHozAlign: 'right', sorter: 'number',
+          formatter: cell => fmt(cell.getValue(), 'CAD', 0),
+        },
+      ],
+    });
+  }
+
+  function applyTheme(theme) {
+    document.getElementById('theme-css').href = BASE + theme.file;
+    document.getElementById('custom-dark-css').textContent = theme.custom ? CUSTOM_DARK_CSS : '';
+    document.getElementById('current-label').textContent = `Theme ${theme.num}: ${theme.name}`;
+    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('btn-' + theme.num).classList.add('active');
+    setTimeout(buildTable, 100);
+  }
+
+  // Build buttons
+  const bar = document.getElementById('theme-bar');
+  THEMES.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'theme-btn';
+    btn.id = 'btn-' + t.num;
+    btn.textContent = `${t.num}. ${t.name}`;
+    btn.onclick = () => applyTheme(t);
+    bar.appendChild(btn);
+  });
+
+  applyTheme(THEMES[0]); // start on Custom Dark
+</script>
+</body>
+</html>
